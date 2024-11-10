@@ -1,0 +1,15 @@
+/* HomePage.css */
+.card {
+    background-image: url("/cards-table.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .card:hover {
+    transform: scale(1.05) blur(4px); /* Slight zoom + blur effect on hover */
+  }
+  
+  .card:focus {
+    transform: scale(1.1); /* Focus effect for accessibility */
+  }
+  
