@@ -18,7 +18,7 @@ const Singleplayer = () => {
   });
 
   useEffect(() => {
-    startNewGame();
+    initializeNewGame();
 
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -28,8 +28,8 @@ const Singleplayer = () => {
 
   const isMobile = screenWidth < 768;
 
-  const startNewGame = () => {
-    const newGame = startGame();
+  const initializeNewRound = () => {
+    const newGame = startGame();  // Starts a new round
     const playerHand = newGame.playerHand;
     const dealerHand = newGame.dealerHand;
   
@@ -38,15 +38,19 @@ const Singleplayer = () => {
   
     let result = "";
     let gameOver = false;
+    let newScore = gameState.playerScore;
   
+    // Check if either player or dealer has blackjack at the start of the round
     if (playerHasBlackjack && dealerHasBlackjack) {
       result = "Tie! Both have Blackjack!";
       gameOver = true;
     } else if (playerHasBlackjack) {
       result = "Blackjack! Player Wins!";
+      newScore += 1;
       gameOver = true;
     } else if (dealerHasBlackjack) {
       result = "Blackjack! Dealer Wins!";
+      newScore -= 1;
       gameOver = true;
     }
   
@@ -55,14 +59,31 @@ const Singleplayer = () => {
       deck: newGame.deck,
       playerHand,
       dealerHand,
-      playerScore: gameOver ? (playerHasBlackjack ? gameState.playerScore + 1 : gameState.playerScore - 1) : 3,
+      playerScore: newScore,
       gameOver,
       result,
       showPlayAgain: gameOver,
       showModal: gameOver,
       modalMessage: gameOver ? result : "",
-    }); 
+    });
   };
+  
+  const initializeNewGame = () => {
+    // Reset the score and start a fresh game
+    setGameState({
+      deck: [],
+      playerHand: [],
+      dealerHand: [],
+      playerScore: 3,
+      gameOver: false,
+      result: "",
+      showPlayAgain: false,
+      showModal: false,
+      modalMessage: "",
+    });
+    initializeNewRound();  // Start the first round of the new game
+  };
+  
 
     const handleHit = () => {
       if (gameState.gameOver) return;
@@ -126,6 +147,7 @@ const Singleplayer = () => {
 
   const handleForfeit = () => {
     let newScore = gameState.playerScore - 1;
+    console.log(newScore);
     setGameState({
       ...gameState,
       gameOver: newScore <= 0,
@@ -143,28 +165,29 @@ const Singleplayer = () => {
   };
 
   const handlePlayAgain = () => {
-    startNewGame();
-  };
-
-  const handleNewGame = () => {
-    setGameState({
-      ...gameState,
-      playerScore: 3,
+    setGameState((prevState) => ({
+      ...prevState,
       gameOver: false,
       result: "",
       showPlayAgain: false,
       showModal: false,
-    });
-    startNewGame();
+    }));
+    initializeNewRound();
   };
 
+  const handleNewGame = () => {
+    initializeNewGame();
+  };
+  
+
   const handleModalConfirm = () => {
-    if (gameState.gameOver && gameState.playerScore <= 0) {
+    if (gameState.playerScore <= 0) {
       handleNewGame();
     } else {
       handlePlayAgain();
     }
   };
+  
 
   const endGame = () => {
     setGameState((prevState) => ({
