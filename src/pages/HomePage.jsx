@@ -16,11 +16,6 @@ const HomePage = () => {
           <p>Play against the dealer in a solo game!</p>
         </Link>
 
-        {/* Multiplayer Card with Link */}
-        <Link to="/multiplayer" className="card flex flex-col items-center justify-center w-96 h-64 rounded-lg shadow-lg hover:scale-105 transform transition-all bg-blue-500 hover:bg-blue-600 text-white p-6 relative overflow-hidden">
-          <h2 className="text-3xl font-bold mb-4">Multiplayer</h2>
-          <p>Play with your friends in a multiplayer game!</p>
-        </Link>
       </div>
     </div>
   );
